@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HOME</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #000;
+      color: #f2f2f2;
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .container {
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      margin-bottom: 24px;
+    }
+
+    p {
+      font-size: 14px;
+      opacity: 0.7;
+      letter-spacing: 0.05em;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: #f2f2f2;
+      border-radius: 50%;
+      margin: 32px auto;
+      animation: breathe 3s infinite ease-in-out;
+    }
+
+    @keyframes breathe {
+      0% { transform: scale(1); opacity: 0.4; }
+      50% { transform: scale(1.8); opacity: 1; }
+      100% { transform: scale(1); opacity: 0.4; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" onclick="toggleAudio()">
+    <h1>HOME</h1>
+    <div class="dot"></div>
+    <p id="status">Tap anywhere to begin</p>
+  </div>
+
+  <audio id="audio" loop>
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script>
+    const audio = document.getElementById("audio");
+    const statusText = document.getElementById("status");
+
+    function toggleAudio() {
+      if (audio.paused) {
+        audio.play();
+        statusText.textContent = "Playing";
+      } else {
+        audio.pause();
+        statusText.textContent = "Paused";
+      }
+    }
+  </script>
+</body>
+</html>
