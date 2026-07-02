@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Guys, I'm keep walking</title>
+
+  <title>Guys I'm keep walking</title>
 
   <style>
     body {
@@ -20,13 +21,14 @@
 
     .container {
       padding: 24px;
+      cursor: pointer;
     }
 
     h1 {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 300;
-      letter-spacing: 0.15em;
-      margin-bottom: 24px;
+      letter-spacing: 0.08em;
+      margin-bottom: 28px;
     }
 
     p {
@@ -45,36 +47,56 @@
     }
 
     @keyframes breathe {
-      0% { transform: scale(1); opacity: 0.4; }
+      0% { transform: scale(1); opacity: 0.35; }
       50% { transform: scale(1.8); opacity: 1; }
-      100% { transform: scale(1); opacity: 0.4; }
+      100% { transform: scale(1); opacity: 0.35; }
     }
   </style>
 </head>
 
 <body>
-  <div class="container" onclick="toggleAudio()">
-    <h1>Guys, I'm keep walking</h1>
+  <div class="container" onclick="startAudio()">
+    <h1>Guys I'm keep walking</h1>
     <div class="dot"></div>
     <p id="status">Tap anywhere to begin</p>
   </div>
 
-  <audio id="audio" loop>
-    <source src="music.mp3" type="audio/mpeg" />
-  </audio>
-
   <script>
-    const audio = document.getElementById("audio");
+    let audioContext;
+    let audioBuffer;
+    let source;
+    let isPlaying = false;
+
     const statusText = document.getElementById("status");
 
-    function toggleAudio() {
-      if (audio.paused) {
-        audio.play();
-        statusText.textContent = "Playing";
-      } else {
-        audio.pause();
-        statusText.textContent = "Paused";
+    async function loadAudio() {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+      const response = await fetch("music.mp3");
+      const arrayBuffer = await response.arrayBuffer();
+      audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    }
+
+    async function startAudio() {
+      if (isPlaying) {
+        return;
       }
+
+      statusText.textContent = "Loading...";
+
+      if (!audioBuffer) {
+        await loadAudio();
+      }
+
+      source = audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.loop = true;
+
+      source.connect(audioContext.destination);
+      source.start(0);
+
+      isPlaying = true;
+      statusText.textContent = "Playing";
     }
   </script>
 </body>
