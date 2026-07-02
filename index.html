@@ -55,48 +55,28 @@
 </head>
 
 <body>
-  <div class="container" onclick="startAudio()">
+  <div class="container" onclick="toggleAudio()">
     <h1>Guys I'm keep walking</h1>
     <div class="dot"></div>
     <p id="status">Tap anywhere to begin</p>
   </div>
 
-  <script>
-    let audioContext;
-    let audioBuffer;
-    let source;
-    let isPlaying = false;
+  <audio id="audio" loop playsinline preload="auto">
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
 
+  <script>
+    const audio = document.getElementById("audio");
     const statusText = document.getElementById("status");
 
-    async function loadAudio() {
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-      const response = await fetch("music.mp3");
-      const arrayBuffer = await response.arrayBuffer();
-      audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-    }
-
-    async function startAudio() {
-      if (isPlaying) {
-        return;
+    function toggleAudio() {
+      if (audio.paused) {
+        audio.play();
+        statusText.textContent = "Playing — tap to pause";
+      } else {
+        audio.pause();
+        statusText.textContent = "Paused — tap to play";
       }
-
-      statusText.textContent = "Loading...";
-
-      if (!audioBuffer) {
-        await loadAudio();
-      }
-
-      source = audioContext.createBufferSource();
-      source.buffer = audioBuffer;
-      source.loop = true;
-
-      source.connect(audioContext.destination);
-      source.start(0);
-
-      isPlaying = true;
-      statusText.textContent = "Playing";
     }
   </script>
 </body>
